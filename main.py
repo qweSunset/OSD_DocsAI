@@ -1,10 +1,14 @@
 import os
+import conv2txt as conv
 from flask import Flask, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
 
 UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+destFolder = "/home/aiuser/projects/OSD_DocsAI/converted/"
+dataFolder = "/home/aiuser/projects/OSD_DocsAI/uploads/"
+
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -23,8 +27,11 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            conv.convertTOtxt(dataFolder, destFolder, filename)
             return redirect(url_for('uploaded_file', filename=filename))
     return render_template('index.html')
+
+conv.logging('hooy')
 
 if __name__=='__main__':
     app.run(debug=True)

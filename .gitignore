@@ -1,1 +1,4 @@
 uploads/*
+converted/*
+__pycache__/*
+errorlog.txt
