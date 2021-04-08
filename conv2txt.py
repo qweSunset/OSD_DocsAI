@@ -59,7 +59,7 @@ def rotate(imagePath, center = None, scale = 1.0):
 def convertDoc2Txt(destFolder, path, info):
     text = ""
     if (info[2].lower() == '.doc'):
-        print('Convert file from DOC to DOCX:', file)
+        print('Convert file from DOC to DOCX:')
         try:
             subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path])
             doc = docx.Document(info[1]+'.docx')
@@ -74,7 +74,7 @@ def convertDoc2Txt(destFolder, path, info):
             logging('Try to convert and read DOC file ' + path + '. Except error: ' + str(ex))
             
     else:
-        print('Convert file from DOCX to TXT:', file)
+        print('Convert file from DOCX to TXT:')
         try:
             doc = docx.Document(path)
             text = ""
@@ -85,11 +85,11 @@ def convertDoc2Txt(destFolder, path, info):
             f.write(text)
             f.close()
         except Exception as ex:
-            logging('Try to get text from DOCX file ' + file + '. Except error: ' + str(ex))
+            logging('Try to get text from DOCX file ' + '. Except error: ' + str(ex))
             
     return text
 
-# convert file from pdf to jpg
+# convert file from tif to jpg
 def convertImageFile2JPG(path):
     fileInfo = getFileInfo(path)
 
@@ -108,19 +108,20 @@ def convertPDF2JPG(path):
 
     numBatchPages = 20
 
-    maxPages = pdf2image._page_count(path)
+#   maxPages = pdf2image._page_count(path)
+    maxPages = len(convert_from_path(path))
 
     fileInfo = getFileInfo(path)
     i = 0
     try:
         os.mkdir(fileInfo[3])
     except:
-        print("Folder exists!")
+        logging("Folder exists!")
 
     for itPage in range(1,maxPages,numBatchPages):
-        pages = convert_from_path(path, dpi=600, grayscale=True, first_page=itPage, last_page=min(itPage+numBatchPages-1, maxPages))
+        pages = convert_from_path(path, dpi=300, grayscale=True, first_page=itPage, last_page=min(itPage+numBatchPages-1, maxPages))
         for page in pages:
-            page.save(fileInfo[3]+'/'+fileInfo[1]+str(i)+'.jpg', 'JPEG', dpi=(600,600), quality=95)
+            page.save(fileInfo[3]+'/'+fileInfo[1]+str(i)+'.jpg', 'JPEG', dpi=(300,300), quality=70)
             i += 1
     
     return (i, fileInfo[3]+'/', fileInfo[1], '.jpg')
@@ -157,14 +158,14 @@ def convertImageToText(destFolder, fileInfo):
                 text += pytesseract.image_to_string(Image.open(fileInfo[1]+fileInfo[2]+str(k)+fileInfo[3]), lang='rus')
         except Exception as ex:
             logging('Try to extract text from file ' + fileInfo[1]+fileInfo[2]+str(k)+fileInfo[3] +'.' + ' Except error: ' + str(ex))
-    
+
     #write text to file
     try:
         f.write(text)
     except Exception as ex:
         logging('Try to write text to file ' + 'text/'+fileInfo[2]+'.txt' +'.' + ' Except error: ' + str(ex))
         return text
-    
+
     f.close()
 
     try:
@@ -177,15 +178,16 @@ def convertImageToText(destFolder, fileInfo):
 
 def convertTOtxt(dataFolder, destFolder, file):
    info = getFileInfo(dataFolder + file)
-        
+
    if (path.exists(destFolder + info[1] + '.txt')):
      logging('File exist: ' + destFolder + info[1] + '.txt!' + '  skipping...')
-            
+
    if (info[2].lower() == '.doc' or info[2].lower() == '.docx'):
      textFile = convertDoc2Txt(destFolder, dataFolder + file, info)
-   else:    
+   else:
       if (info[2].lower() == '.pdf'):
         fileInfo = convertPDF2JPG(dataFolder + file)
+        textFile = convertImageToText(destFolder, fileInfo)
       else:
         fileInfo = convertImageFile2JPG(dataFolder + file)
         textFile = convertImageToText(destFolder, fileInfo)
