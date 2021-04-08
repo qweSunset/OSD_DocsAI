@@ -6,16 +6,16 @@ from werkzeug.utils import secure_filename
 from flask import send_from_directory
 
 UPLOAD_FOLDER = 'uploads'
-CONVERTED_FOLDER = 'converted' 
+PROCESSED_FOLDER = 'processed' 
 destFolder = "converted/"
 dataFolder = "uploads/"
-
+processedFolder = "processed/"
 
 ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['CONVERTED_FOLDER'] = CONVERTED_FOLDER
+app.config['PROCESSED_FOLDER'] = PROCESSED_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -24,9 +24,9 @@ def allowed_file(filename):
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
-@app.route('/converted/<filename>')
-def converted_file(filename):
-    return send_from_directory(app.config['CONVERTED_FOLDER'], filename)
+@app.route('/processed/<filename>')
+def processed_file(filename):
+    return send_from_directory(app.config['PROCESSED_FOLDER'], filename)
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -37,11 +37,16 @@ def upload_file():
             filename = file.filename
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             conv.convertTOtxt(dataFolder, destFolder, filename)
-            
-            x = filename.split('.')
-            filename = str(x[0]) + '.txt'
+ 
+            pre, ext = os.path.splitext(filename)
+            filename = pre + '.txt'
+            sentences = tps.sentProc(tps.sent_tokenize(tps.textProc(str(open(destFolder + filename, 'r').read())), language="russian"))
 
-            return redirect(url_for('converted_file', filename=filename))
+            with open(processedFolder + filename, 'w') as txtfile:
+               for sent in sentences:
+                 txtfile.write('%s\n' % sent)            
+
+            return redirect(url_for('processed_file', filename=filename))
     return render_template('index.html')
 
 

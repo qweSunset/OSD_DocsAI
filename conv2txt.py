@@ -1,6 +1,5 @@
 import os
 from os import path
-
 import sys
 import cv2
 from PIL import Image
@@ -59,9 +58,8 @@ def rotate(imagePath, center = None, scale = 1.0):
 def convertDoc2Txt(destFolder, path, info):
     text = ""
     if (info[2].lower() == '.doc'):
-        print('Convert file from DOC to DOCX:')
         try:
-            subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path])
+            subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path, '--outdir', 'uploads'])
             doc = docx.Document(info[1]+'.docx')
             text = ""
             for para in doc.paragraphs:
@@ -72,9 +70,8 @@ def convertDoc2Txt(destFolder, path, info):
             f.close()
         except Exception as ex:
             logging('Try to convert and read DOC file ' + path + '. Except error: ' + str(ex))
-            
+
     else:
-        print('Convert file from DOCX to TXT:')
         try:
             doc = docx.Document(path)
             text = ""
