@@ -1,0 +1,1 @@
+{"B-ACCNUM": 1, "B-ADDR": 2, "B-CADNUM": 3, "B-DATE": 4, "B-DOCNUM": 5, "B-INN": 6, "B-LOC": 7, "B-MONEM": 8, "B-OGRN": 9, "B-ORG": 10, "B-PER": 11, "I-ACCNUM": 12, "I-ADDR": 13, "I-CADNUM": 14, "I-DATE": 15, "I-DOCNUM": 16, "I-INN": 17, "I-LOC": 18, "I-MONEM": 19, "I-OGRN": 20, "I-ORG": 21, "I-PER": 22, "O": 23, "PAD": 0}

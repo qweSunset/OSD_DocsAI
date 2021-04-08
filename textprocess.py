@@ -523,3 +523,29 @@ def sentProc(sents):
 
  return sentences
 
+def getWords(sentences):
+  f_words = []
+  for w in range(len(sentences)):
+    word = ''
+    s_words = []
+    for i in range(len(sentences[w])):
+        if not(sentences[w][i] == ' ' or sentences[w][i] == ',' or sentences[w][i] == '.' or sentences[w][i] == ':' or sentences[w][i] == '('
+              or sentences[w][i] == ')' or sentences[w][i] == '/' or sentences[w][i] == '"' or sentences[w][i] == '<'
+              or sentences[w][i] == '«' or sentences[w][i] == '»' or sentences[w][i] == '?' or sentences[w][i] == ';'):
+          word += sentences[w][i]
+        else:
+          s_words.append(word)
+          if not(sentences[w][i] == ' '):
+            s_words.append(str(sentences[w][i]))
+          word = ''
+    f_words.append(s_words)
+
+  set_words = []
+  for i in range(len(f_words)):
+    d = []
+    for l in range(len(f_words[i])):
+      if not(f_words[i][l] == ''):
+        d.append(f_words[i][l])
+    set_words.append(d)
+
+  return set_words

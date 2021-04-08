@@ -1,6 +1,7 @@
 uploads/*
 converted/*
 processed/*
+log/*
 <<<<<<< HEAD
 __pycache__/*
 errorlog.txt

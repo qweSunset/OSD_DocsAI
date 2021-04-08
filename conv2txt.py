@@ -19,7 +19,7 @@ text = ''
 
 #write logs to file
 def logging(textLog):
-    f = open('errlog.txt','a')
+    f = open('log/convErrlog.txt','a')
     f.write(textLog+'\n')
     f.close()
 
@@ -33,9 +33,9 @@ def getFileInfo(path):
 #rotate image to normal pos
 def rotate(imagePath, center = None, scale = 1.0):
     image = cv2.imread(imagePath, cv2.IMREAD_COLOR)
-    
+
     orgAngle = int(re.search('(?<=Rotate: )\d+', pytesseract.image_to_osd(image)).group(0))
-    
+
     if orgAngle != 0:
         angle=360-orgAngle
         (h, w) = image.shape[:2]
@@ -46,12 +46,12 @@ def rotate(imagePath, center = None, scale = 1.0):
         # Perform the rotation
         M = cv2.getRotationMatrix2D(center, angle, scale)
         rotated = cv2.warpAffine(image, M, (w, h))
-        
+
         img = Image.fromarray(rotated, 'RGB')
         img.save(imagePath)
 
         return True
-    
+
     return False
 
 # convert file from doc or docx to text
@@ -83,7 +83,7 @@ def convertDoc2Txt(destFolder, path, info):
             f.close()
         except Exception as ex:
             logging('Try to get text from DOCX file ' + '. Except error: ' + str(ex))
-            
+
     return text
 
 # convert file from tif to jpg
