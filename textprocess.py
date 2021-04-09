@@ -1,7 +1,4 @@
 import re
-import json
-import numpy as np
-from collections import OrderedDict
 import nltk
 nltk.download('punkt')
 from nltk.tokenize import sent_tokenize
