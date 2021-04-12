@@ -47,9 +47,9 @@ def tokenChars(set_words):
           word_seq = []
           for j in range(max_len_char):
               try:
-                  word_seq.append(char2idx.get(sentence[i][j]))
+                  word_seq.append(np.dtype('int64').type(char2idx.get(sentence[i][j])))
               except:
-                  word_seq.append(char2idx.get("PAD"))
+                  word_seq.append(np.dtype('int64').type(char2idx.get("PAD")))
           sent_seq.append(word_seq)
       X_char.append(np.array(sent_seq))
   X_char = np.array(X_char).reshape((len(X_char), max_len, max_len_char))
@@ -68,5 +68,5 @@ def getJson(test_pred, X_word, unkWords):
         else:
           sent[idx2word[str(w)]] = idx2tag[str(pred)]
     outdict.append(sent)
-  jsonString = json.dumps(outdict)
-  return jsonString
+  jsonString = json.dumps(outdict, ensure_ascii=False)
+  return [jsonString, outdict]

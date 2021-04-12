@@ -116,9 +116,9 @@ def convertPDF2JPG(path):
         logging("Folder exists!")
 
     for itPage in range(1,maxPages,numBatchPages):
-        pages = convert_from_path(path, dpi=300, grayscale=True, first_page=itPage, last_page=min(itPage+numBatchPages-1, maxPages))
+        pages = convert_from_path(path, dpi=600, grayscale=True, first_page=itPage, last_page=min(itPage+numBatchPages-1, maxPages))
         for page in pages:
-            page.save(fileInfo[3]+'/'+fileInfo[1]+str(i)+'.jpg', 'JPEG', dpi=(300,300), quality=70)
+            page.save(fileInfo[3]+'/'+fileInfo[1]+str(i)+'.jpg', 'JPEG', dpi=(600,600), quality=95)
             i += 1
     
     return (i, fileInfo[3]+'/', fileInfo[1], '.jpg')

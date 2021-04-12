@@ -1,0 +1,39 @@
+
+<div style="background-color: №e1e1fa; float:left">
+{% for item in data %}
+    {% for i in item.items() %}
+	{% if i[0] == 'ХАРАКТЕР' or i[0] == 'СВЕДЕНИЯ' or i[0] == 'ОПИСАНИЕ' or i[0] == 'СУММА' or i[0] == 'СРОК' or i[0] == 'ПЕРЕЧЕНЬ' or i[0] == 'ПРЕДМЕТ' or i[0] == 'РЕКВИЗИТЫ' or i[0] == 'ВИД' or i[0] == 'ИНЫЕ' or i[0] == 'ПРИЛАГАЕМЫЕ' or i[0] == 'ОСНОВАНИЕ' or i[0] == 'ОПРЕДЕЛЕНИЯ' %}<br><hr>
+	{% endif %}
+	{% if i[1] == 'B-ORG' or i[1] == 'I-ORG' %}
+	    <span style="background-color: #87d3fa">{{i[0]}}</span>
+	{% elif i[1] == 'B-ADDR' or i[1] == 'I-ADDR' %}
+	    <span style="background-color: lightgreen">{{i[0]}}</span>
+	{% elif i[1] == 'B-LOC' or i[1] == 'I-LOC' %}
+	    <span style="background-color: #40c75f">{{i[0]}}</span>
+	{% elif i[1] == 'B-PER' or i[1] == 'I-PER' %}
+         <span style="background-color:#ffccaa">{{i[0]}}</span>
+        {% elif i[1] == 'B-DOCNUM' or i[1] == 'I-DOCNUM' %}
+         <span style="background-color: #f1f447">{{i[0]}}</span>
+        {% elif i[1] == 'B-DATE' or i[1] == 'I-DATE' %}
+         <span style="background-color: #c39bd3">{{i[0]}}</span>
+        {% elif i[1] == 'B-CADNUM' or i[1] == 'I-CADNUM' %}
+         <span style="background-color: #e59866">{{i[0]}}</span>
+        {% elif i[1] == 'B-INN' or i[1] == 'I-INN' %}
+         <span style="background-color: #c1c7ce">{{i[0]}}</span>
+        {% elif i[1] == 'B-OGRN' or i[1] == 'I-OGRN' %}
+         <span style="background-color: #d0d3d4">{{i[0]}}</span>
+        {% elif i[1] == 'B-ACCNUM' or i[1] == 'I-ACCNUM' %}
+         <span style="background-color: #5dade2">{{i[0]}}</span>
+        {% elif i[1] == 'B-MONEM' or i[1] == 'I-MONEM' %}
+         <span style="background-color: #fa7773">{{i[0]}}</span>
+	{% else %}<span>{{i[0]}}</span>
+	{% endif %}
+    {% endfor %}
+{% endfor %}
+</div>
+<br>
+<form action="/show_json/" method="POST">
+    <!-- скрытый параметр -->
+    <input type="hidden" name="index" value=1>
+    <input type="submit" class="btn btn-dark" value="Показать json">
+</form>
