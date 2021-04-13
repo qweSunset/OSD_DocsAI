@@ -41,11 +41,9 @@ def uploaded_file(filename):
 def processed_file(filename):
     return send_from_directory(app.config['PROCESSED_FOLDER'], filename)
 
-@app.route('/show_json/', methods=['POST'])
+@app.route('/show_json/')
 def show_json():
-       index = request.form['index']
-       if index == 1:
-         return render_template('json.html', data=jsonString)
+       return render_template('json.html', data=jsonString)
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
@@ -75,17 +73,18 @@ def upload_file():
                X_word = tokenized[0]
                unkWords = tokenized[1]
                X_char = tkr.tokenChars(set_words)
-               test_pred = tkr.model.predict([X_word, X_char], verbose=0)
             try:
-               output = tkr.getJson(test_pred, X_word, unkWords)
-            except Exception:
+               test_pred = tkr.model.predict([X_word, X_char], verbose=0)
+            except:
                logging('Something goes wrong on pred model with  ' + filename)
+            output = tkr.getJson(test_pred, X_word, unkWords)
+            global jsonString 
             jsonString = output[0]
             listObj = output[1]
             with open(processedFolder + filename, 'w') as txtfile:
                for sent in sentences:
                  txtfile.write('%s\n' % sent)
-            return render_template('output.html', data=listObj, jsStr=jsonString)
+            return render_template('output.html', data=listObj)
     return render_template('index.html')
 
 

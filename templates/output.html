@@ -1,5 +1,19 @@
-
-<div style="background-color: №e1e1fa; float:left">
+<!doctype html>
+<title>NER</title>
+<div id="piped" style="width: 10px; height: 28px; background: red; float:left; margin-left: 10px; margin-bottom: 10px;"></div><div style="float:left; margin-left: 10px; margin-bottom: 10px;">
+<span style="font-size: 30px;"><b>Распознаваемые сущности:</b></span></div><br>
+<div id="square" style="width: 10px; height: 10px; background: #87d3fa; float:left; clear: left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Организации</span></div>
+<div id="square" style="width: 10px; height: 10px; background: lightgreen; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Адреса</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #40c75f; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Локации</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #ffccaa; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Персоны</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #f1f447; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Номера документов</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #c39bd3; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Даты</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #e59866; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Кадастровые номера</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #c1c7ce; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>ИНН</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #d0d3d4; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>ОГРН</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #5dade2; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Номера счетов</span></div>
+<div id="square" style="width: 10px; height: 10px; background: #fa7773; float:left; margin-left: 10px;"></div><div style="float:left; margin-left: 10px;"><span>Денежные суммы</span></div>
+<div style="background-color: #F8F8FF; border-style: groove; padding: 10px; border-radius: 7px; float:left; margin-top: 5px;">
 {% for item in data %}
     {% for i in item.items() %}
 	{% if i[0] == 'ХАРАКТЕР' or i[0] == 'СВЕДЕНИЯ' or i[0] == 'ОПИСАНИЕ' or i[0] == 'СУММА' or i[0] == 'СРОК' or i[0] == 'ПЕРЕЧЕНЬ' or i[0] == 'ПРЕДМЕТ' or i[0] == 'РЕКВИЗИТЫ' or i[0] == 'ВИД' or i[0] == 'ИНЫЕ' or i[0] == 'ПРИЛАГАЕМЫЕ' or i[0] == 'ОСНОВАНИЕ' or i[0] == 'ОПРЕДЕЛЕНИЯ' %}<br><hr>
@@ -31,9 +45,8 @@
     {% endfor %}
 {% endfor %}
 </div>
-<br>
-<form action="/show_json/" method="POST">
-    <!-- скрытый параметр -->
-    <input type="hidden" name="index" value=1>
-    <input type="submit" class="btn btn-dark" value="Показать json">
-</form>
+<div id="btn">
+    <form action="/show_json/" method="GET">
+	<input style="margin-top: 24px; clear: left" type="submit" class="json" value="Показать json">
+    </form>
+</div>
