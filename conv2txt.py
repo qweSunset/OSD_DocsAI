@@ -19,7 +19,7 @@ text = ''
 
 #write logs to file
 def logging(textLog):
-    f = open('log/convErrlog.txt','a')
+    f = open('data/log/convErrlog.txt','a')
     f.write(textLog+'\n')
     f.close()
 
@@ -60,7 +60,7 @@ def convertDoc2Txt(destFolder, path, info):
     if (info[2].lower() == '.doc'):
         try:
             subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path, '--outdir', 'uploads'])
-            doc = docx.Document('uploads/'+info[1]+'.docx')
+            doc = docx.Document('data/uploads/'+info[1]+'.docx')
             text = ""
             for para in doc.paragraphs:
                 text += para.text
@@ -188,6 +188,3 @@ def convertTOtxt(dataFolder, destFolder, file):
       else:
         fileInfo = convertImageFile2JPG(dataFolder + file)
         textFile = convertImageToText(destFolder, fileInfo)
-
-
-

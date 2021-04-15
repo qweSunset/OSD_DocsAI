@@ -6,13 +6,13 @@ import tokenizer as tkr
 from flask import Flask, request, redirect, url_for, render_template
 from flask import send_from_directory
 
-UPLOAD_FOLDER = 'uploads'
-PROCESSED_FOLDER = 'processed' 
-destFolder = "converted/"
-dataFolder = "uploads/"
-processedFolder = "processed/"
+UPLOAD_FOLDER = 'data/uploads'
+PROCESSED_FOLDER = 'data/processed' 
+destFolder = "data/converted/"
+dataFolder = "data/uploads/"
+processedFolder = "data/processed/"
 
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx'])
+ALLOWED_EXTENSIONS = set(['txt', 'tif', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -21,12 +21,12 @@ app.config['PROCESSED_FOLDER'] = PROCESSED_FOLDER
 jsonString = ''
 
 def logging(textLog):
-    f = open('log/mainErrlog.txt','a')
+    f = open('data/log/mainErrlog.txt','a')
     f.write(textLog+'\n')
     f.close()
 
 def procLog(textLog):
-    f = open('log/processLog.txt','a')
+    f = open('data/log/processLog.txt','a')
     f.write(textLog+'\n')
     f.close()
 
@@ -89,4 +89,4 @@ def upload_file():
 
 
 if __name__=='__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

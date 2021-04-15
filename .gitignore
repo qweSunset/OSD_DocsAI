@@ -1,9 +1,5 @@
-uploads/*
-converted/*
-processed/*
-log/*
+data/*
 <<<<<<< HEAD
 __pycache__/*
-errorlog.txt
 =======
 >>>>>>> 876bff19d46c04720ea88cb9d369d0fb2f0d1a9b
