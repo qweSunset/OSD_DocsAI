@@ -54,8 +54,8 @@ def upload_file():
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             try:
                conv.convertTOtxt(dataFolder, destFolder, filename)
-            except:
-                conv.logging('Something goes wrong with convertation' + filename)
+            except Exception as ex:
+                conv.logging('Something goes wrong with convertation ' + filename + str(ex))
             pre, ext = os.path.splitext(filename)
             filename = pre + '.txt'
             if os.path.exists(destFolder + filename):

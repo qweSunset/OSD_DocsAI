@@ -90,7 +90,7 @@ def convertDoc2Txt(destFolder, path, info):
 def convertImageFile2JPG(path):
     fileInfo = getFileInfo(path)
 
-    if (info[2].lower() == '.tif') or (info[2].lower() == '.tiff'):
+    if (fileInfo[2].lower() == '.tif') or (fileInfo[2].lower() == '.tiff'):
         try:
             im = Image.open(path)
             im.save(fileInfo[3]+'.jpg')
