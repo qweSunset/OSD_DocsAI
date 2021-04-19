@@ -59,7 +59,7 @@ def convertDoc2Txt(destFolder, path, info):
     text = ""
     if (info[2].lower() == '.doc'):
         try:
-            subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path, '--outdir', 'uploads'])
+            subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path, '--outdir', 'data/uploads'])
             doc = docx.Document('data/uploads/'+info[1]+'.docx')
             text = ""
             for para in doc.paragraphs:
