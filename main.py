@@ -6,6 +6,10 @@ import tokenizer as tkr
 from flask import Flask, request, redirect, url_for, render_template
 from flask import send_from_directory
 
+import ssl 
+context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+context.load_cert_chain("ssl/my-server.cert", "ssl/my-server.key")
+
 UPLOAD_FOLDER = 'data/uploads'
 PROCESSED_FOLDER = 'data/processed' 
 destFolder = "data/converted/"
@@ -90,3 +94,4 @@ def upload_file():
 
 if __name__=='__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
+    
