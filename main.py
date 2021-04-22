@@ -1,4 +1,5 @@
 import os
+import time
 import numpy as np
 import conv2txt as conv
 import textprocess as tps
@@ -16,7 +17,7 @@ destFolder = "data/converted/"
 dataFolder = "data/uploads/"
 processedFolder = "data/processed/"
 
-ALLOWED_EXTENSIONS = set(['txt', 'tif', 'pdf', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'docx'])
+ALLOWED_EXTENSIONS = set(['txt', 'tif', 'pdf', 'PDF', 'png', 'jpg', 'jpeg', 'gif', 'doc', 'DOC', 'docx'])
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -62,33 +63,33 @@ def upload_file():
                 conv.logging('Something goes wrong with convertation ' + filename + str(ex))
             pre, ext = os.path.splitext(filename)
             filename = pre + '.txt'
-            if os.path.exists(destFolder + filename):
+            if os.path.exists(destFolder + filename) and os.path.getsize(destFolder + filename) != 0:
                try:
                  sentences = tps.sentProc(tps.sent_tokenize(tps.textProc(str(open(destFolder + filename, 'r').read())), language="russian"))
                except Exception:
-                 logging('Something goes wrong on sent tokenizer with' + filename)
-                 return render_template('404.html')
-            with open(processedFolder + filename, 'w') as txtfile:
-               for sent in sentences:
-                 txtfile.write('%s\n' % sent)
-            if os.path.exists(processedFolder + filename):
+                 logging('Something goes wrong on sent tokenizer with ' + filename)
+                 return 'Что-то тут ошло не так'
+                #  render_template('404.html')
+               with open(processedFolder + filename, 'w') as txtfile:
+                  for sent in sentences:
+                     txtfile.write('%s\n' % sent)
+            else: return render_template('404.html')
+            if os.path.exists(processedFolder + filename) and os.path.getsize(processedFolder + filename) != 0:
                set_words = tps.getWords(sentences)
                tokenized = tkr.tokenWords(set_words)
                X_word = tokenized[0]
                unkWords = tokenized[1]
                X_char = tkr.tokenChars(set_words)
-            try:
-               test_pred = tkr.model.predict([X_word, X_char], verbose=0)
-            except:
-               logging('Something goes wrong on pred model with  ' + filename)
-            output = tkr.getJson(test_pred, X_word, unkWords)
-            global jsonString 
-            jsonString = output[0]
-            listObj = output[1]
-            with open(processedFolder + filename, 'w') as txtfile:
-               for sent in sentences:
-                 txtfile.write('%s\n' % sent)
-            return render_template('output.html', data=listObj)
+               try:
+                    test_pred = tkr.model.predict([X_word, X_char], verbose=0)
+               except:
+                    logging('Something goes wrong on pred model with  ' + filename)
+               output = tkr.getJson(test_pred, X_word, unkWords)
+               global jsonString 
+               jsonString = output[0]
+               listObj = output[1]
+               return render_template('output.html', data=listObj)
+        else: return render_template('404.html')
     return render_template('index.html')
 
 

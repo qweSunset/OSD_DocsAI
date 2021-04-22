@@ -13,7 +13,7 @@ import docx
 import subprocess
 import re
 import math
-
+import time
 
 text = ''
 
@@ -32,7 +32,7 @@ def getFileInfo(path):
 
 #rotate image to normal pos
 def rotate(imagePath, center = None, scale = 1.0):
-    image = cv2.imread(imagePath, cv2.IMREAD_COLOR)
+    image = cv2.imread(imagePath, cv2.IMREAD_GRAYSCALE)
 
     orgAngle = int(re.search('(?<=Rotate: )\d+', pytesseract.image_to_osd(image)).group(0))
 
@@ -58,9 +58,20 @@ def rotate(imagePath, center = None, scale = 1.0):
 def convertDoc2Txt(destFolder, path, info):
     text = ""
     if (info[2].lower() == '.doc'):
+        flag = 1
         try:
-            subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path, '--outdir', 'data/uploads'])
-            doc = docx.Document('data/uploads/'+info[1]+'.docx')
+          flag = subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path, '--outdir', 'data/uploads'])
+        except Exception as ex:
+          logging('Try to convert and read DOC file ' + path + '. Except error: ' + str(ex))
+
+        while flag == 1:
+            time.sleep(0.5)
+        doc = docx.Document('data/uploads/'+info[1]+'.docx')
+        while not os.path.exists('data/uploads/'+info[1]+'.docx'):
+            time.sleep(0.5)
+        while os.path.getsize('data/uploads/'+info[1]+'.docx') == 0:
+            time.sleep(0.5)     
+        if doc != '':
             text = ""
             for para in doc.paragraphs:
                 text += para.text
@@ -68,8 +79,6 @@ def convertDoc2Txt(destFolder, path, info):
             f = open(destFolder+info[1]+'.txt','w')
             f.write(text)
             f.close()
-        except Exception as ex:
-            logging('Try to convert and read DOC file ' + path + '. Except error: ' + str(ex))
 
     else:
         try:
