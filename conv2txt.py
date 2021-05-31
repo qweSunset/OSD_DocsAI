@@ -9,13 +9,33 @@ import tempfile
 import pytesseract
 import shutil
 import textract
-import docx
+# import docx
 import subprocess
 import re
 import math
 import time
+from docx import Document
+from docx.document import Document as _Document
+from docx.oxml.text.paragraph import CT_P
+from docx.oxml.table import CT_Tbl
+from docx.table import _Cell, Table
+from docx.text.paragraph import Paragraph
 
 text = ''
+
+def iter_block_items(parent):
+    if isinstance(parent, _Document):
+        parent_elm = parent.element.body
+    elif isinstance(parent, _Cell):
+        parent_elm = parent._tc
+    else:
+        raise ValueError("something's not right")
+
+    for child in parent_elm.iterchildren():
+        if isinstance(child, CT_P):
+            yield Paragraph(child, parent)
+        elif isinstance(child, CT_Tbl):
+            yield Table(child, parent)
 
 #write logs to file
 def logging(textLog):
@@ -32,7 +52,7 @@ def getFileInfo(path):
 
 #rotate image to normal pos
 def rotate(imagePath, center = None, scale = 1.0):
-    image = cv2.imread(imagePath, cv2.IMREAD_GRAYSCALE)
+    image = cv2.imread(imagePath, cv2.IMREAD_ANYCOLOR)
 
     orgAngle = int(re.search('(?<=Rotate: )\d+', pytesseract.image_to_osd(image)).group(0))
 
@@ -47,12 +67,52 @@ def rotate(imagePath, center = None, scale = 1.0):
         M = cv2.getRotationMatrix2D(center, angle, scale)
         rotated = cv2.warpAffine(image, M, (w, h))
 
-        img = Image.fromarray(rotated, 'RGB')
+        img = Image.fromarray(rotated, 'L')
         img.save(imagePath)
 
         return True
 
     return False
+
+# convert file from doc or docx to text
+# def convertDoc2Txt(destFolder, path, info):
+#     text = ""
+#     if (info[2].lower() == '.doc'):
+#         flag = 1
+#         try:
+#           flag = subprocess.call(['soffice', '--headless', '--convert-to', 'docx', path, '--outdir', 'data/uploads'])
+#         except Exception as ex:
+#           logging('Try to convert and read DOC file ' + path + '. Except error: ' + str(ex))
+
+#         while flag == 1:
+#             time.sleep(0.5)
+#         doc = docx.Document('data/uploads/'+info[1]+'.docx')
+#         while not os.path.exists('data/uploads/'+info[1]+'.docx'):
+#             time.sleep(0.5)
+#         while os.path.getsize('data/uploads/'+info[1]+'.docx') == 0:
+#             time.sleep(0.5)     
+#         if doc != '':
+#             text = ""
+#             for para in doc.paragraphs:
+#                 text += para.text
+
+#             f = open(destFolder+info[1]+'.txt','w')
+#             f.write(text)
+#             f.close()
+#     else:
+#         try:
+#             doc = docx.Document(path)
+#             text = ""
+#             for para in doc.paragraphs:
+#                 text += para.text
+
+#             f = open(destFolder+info[1]+'.txt','w')
+#             f.write(text)
+#             f.close()
+#         except Exception as ex:
+#             logging('Try to get text from DOCX file ' + '. Except error: ' + str(ex))
+
+#     return text
 
 # convert file from doc or docx to text
 def convertDoc2Txt(destFolder, path, info):
@@ -66,27 +126,42 @@ def convertDoc2Txt(destFolder, path, info):
 
         while flag == 1:
             time.sleep(0.5)
-        doc = docx.Document('data/uploads/'+info[1]+'.docx')
+        doc = Document('data/uploads/'+info[1]+'.docx')
         while not os.path.exists('data/uploads/'+info[1]+'.docx'):
             time.sleep(0.5)
         while os.path.getsize('data/uploads/'+info[1]+'.docx') == 0:
             time.sleep(0.5)     
         if doc != '':
-            text = ""
-            for para in doc.paragraphs:
-                text += para.text
-
+            text = ''
+            for block in iter_block_items(doc):
+                if isinstance(block, Paragraph):
+                    text += ''.join(block.text)
+                if isinstance(block, Table):
+                    for i, row in enumerate(block.rows):
+                        for i, cell in enumerate(row.cells):
+                            if str(cell.text) != '':
+                                if i != max(range(len(row.cells))):
+                                   text += (str(cell.text) + ' - ')
+                                else: 
+                                    text += (str(cell.text) + '. ')
             f = open(destFolder+info[1]+'.txt','w')
             f.write(text)
             f.close()
-
     else:
         try:
-            doc = docx.Document(path)
-            text = ""
-            for para in doc.paragraphs:
-                text += para.text
-
+            doc = Document(path)
+            text = ''
+            for block in iter_block_items(doc):
+                if isinstance(block, Paragraph):
+                    text += ''.join(block.text)
+                if isinstance(block, Table):
+                    for i, row in enumerate(block.rows):
+                        for i, cell in enumerate(row.cells):
+                            if str(cell.text) != '':
+                                if i != max(range(len(row.cells))):
+                                    text += (str(cell.text) + ' - ')
+                                else: 
+                                    text += (str(cell.text) + '. ')
             f = open(destFolder+info[1]+'.txt','w')
             f.write(text)
             f.close()

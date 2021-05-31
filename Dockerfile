@@ -24,6 +24,7 @@ RUN apt-get install -y tesseract-ocr-osd
 ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/4.00/tessdata/
 ENV TF_XLA_FLAGS=--tf_xla_enable_xla_devices
 
+RUN pip install --upgrade pip
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
